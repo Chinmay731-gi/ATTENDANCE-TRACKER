@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SinhgadSathi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .section { display: none; }
+    .section.active { display: block; }
+    .modal { background: rgba(0,0,0,0.5); }
+    .profile-card:hover { transform: scale(1.05); transition: 0.2s ease; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-100 via-pink-100 to-yellow-100 min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-3 flex justify-between items-center shadow-md">
+    <h1 class="text-2xl font-bold tracking-wide">SinhgadSathi</h1>
+    <input type="text" id="search" placeholder="Search..." 
+      class="px-3 py-1 rounded-lg text-black focus:outline-none w-40 sm:w-60"/>
+  </nav>
+
+  <!-- Gender Selection Modal -->
+  <div id="genderModal" class="modal fixed inset-0 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl text-center max-w-sm w-full">
+      <h2 class="text-xl font-bold mb-4 text-gray-700">Choose Your Gender</h2>
+      <div class="flex justify-center gap-4">
+        <button onclick="selectGender('male')" 
+          class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-5 py-2 rounded-lg shadow-md hover:opacity-90">
+          Male
+        </button>
+        <button onclick="selectGender('female')" 
+          class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-5 py-2 rounded-lg shadow-md hover:opacity-90">
+          Female
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="p-4 pb-20">
+    <!-- Suggestions Section -->
+    <div id="suggestions" class="section active">
+      <h2 class="text-2xl font-bold mb-4 text-gray-700">Suggestions</h2>
+      <div id="profileGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- Requests Section -->
+    <div id="requests" class="section">
+      <h2 class="text-2xl font-bold mb-4 text-gray-700">Requests</h2>
+      <p class="text-gray-600">No requests yet!</p>
+    </div>
+
+    <!-- Chat Section -->
+    <div id="chat" class="section">
+      <h2 class="text-2xl font-bold mb-4 text-gray-700">Chat</h2>
+      <p class="text-gray-600">Start chatting with your matches!</p>
+    </div>
+
+    <!-- Profile Section -->
+    <div id="profile" class="section">
+      <h2 class="text-2xl font-bold mb-4 text-gray-700">Profile</h2>
+      <p class="text-gray-600">Your profile details will appear here.</p>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg flex justify-around py-3 rounded-t-xl">
+    <button onclick="switchSection('suggestions')" class="text-purple-700 font-semibold">Suggestions</button>
+    <button onclick="switchSection('requests')" class="text-purple-700 font-semibold">Requests</button>
+    <button onclick="switchSection('chat')" class="text-purple-700 font-semibold">Chat</button>
+    <button onclick="switchSection('profile')" class="text-purple-700 font-semibold">Profile</button>
+  </nav>
+
+  <script>
+    const profiles = {
+      male: [
+        {name: "Aisha"}, {name: "Riya"}, {name: "Simran"},
+        {name: "Priya"}, {name: "Sana"}, {name: "Ananya"}
+      ],
+      female: [
+        {name: "Rahul"}, {name: "Aman"}, {name: "Rohit"},
+        {name: "Kunal"}, {name: "Vivek"}, {name: "Arjun"}
+      ]
+    };
+
+    let currentGender = null;
+
+    function selectGender(gender) {
+      document.getElementById('genderModal').style.display = 'none';
+      currentGender = gender;
+      displayProfiles(gender);
+    }
+
+    function displayProfiles(gender) {
+      const container = document.getElementById('profileGrid');
+      container.innerHTML = '';
+      profiles[gender].forEach(profile => {
+        const card = `
+          <div class="profile-card bg-white rounded-xl shadow-md p-4 text-center border border-gray-200">
+            <h3 class="font-bold text-lg text-purple-700">${profile.name}</h3>
+          </div>`;
+        container.innerHTML += card;
+      });
+    }
+
+    function switchSection(section) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(section).classList.add('active');
+    }
+
+    document.getElementById('search').addEventListener('input', function(e) {
+      const query = e.target.value.toLowerCase();
+      const container = document.getElementById('profileGrid');
+      container.innerHTML = '';
+      profiles[currentGender]
+        .filter(profile => profile.name.toLowerCase().includes(query))
+        .forEach(profile => {
+          const card = `
+            <div class="profile-card bg-white rounded-xl shadow-md p-4 text-center border border-gray-200">
+              <h3 class="font-bold text-lg text-purple-700">${profile.name}</h3>
+            </div>`;
+          container.innerHTML += card;
+        });
+    });
+  </script>
+</body>
+</html>
